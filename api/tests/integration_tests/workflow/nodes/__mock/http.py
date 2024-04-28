@@ -1,14 +1,14 @@
 import os
-from json import dumps
-from typing import Literal
-
-import httpx._api as httpx
 import pytest
 import requests.api as requests
-from _pytest.monkeypatch import MonkeyPatch
-from httpx import Request as HttpxRequest
+import httpx._api as httpx
 from requests import Response as RequestsResponse
+from httpx import Request as HttpxRequest
 from yarl import URL
+
+from typing import Literal
+from _pytest.monkeypatch import MonkeyPatch
+from json import dumps
 
 MOCK = os.getenv('MOCK_SWITCH', 'false') == 'true'
 

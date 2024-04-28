@@ -18,12 +18,6 @@ const translation = {
     tokens: 'Tổng số token',
     steps: 'Các bước chạy',
   },
-  resultEmpty: {
-    title: 'Chạy này chỉ xuất ra định dạng JSON,',
-    tipLeft: 'vui lòng truy cập ',
-    link: 'bảng chi tiết',
-    tipRight: ' xem nó.',
-  },
 }
 
 export default translation

@@ -1,16 +1,16 @@
 import {
   memo,
   useEffect,
-  // useRef,
+  useRef,
   useState,
 } from 'react'
 import cn from 'classnames'
 import { useTranslation } from 'react-i18next'
-import ResultText from '../run/result-text'
+import OutputPanel from '../run/output-panel'
 import ResultPanel from '../run/result-panel'
 import TracingPanel from '../run/tracing-panel'
 import {
-  useWorkflowInteractions,
+  useWorkflowRun,
 } from '../hooks'
 import { useStore } from '../store'
 import {
@@ -22,25 +22,26 @@ import { XClose } from '@/app/components/base/icons/src/vender/line/general'
 
 const WorkflowPreview = () => {
   const { t } = useTranslation()
-  const { handleCancelDebugAndPreviewPanel } = useWorkflowInteractions()
-  const workflowRunningData = useStore(s => s.workflowRunningData)
+  const { handleRunSetting } = useWorkflowRun()
   const showInputsPanel = useStore(s => s.showInputsPanel)
-  const showDebugAndPreviewPanel = useStore(s => s.showDebugAndPreviewPanel)
+  const workflowRunningData = useStore(s => s.workflowRunningData)
   const [currentTab, setCurrentTab] = useState<string>(showInputsPanel ? 'INPUT' : 'TRACING')
 
   const switchTab = async (tab: string) => {
     setCurrentTab(tab)
   }
 
-  useEffect(() => {
-    if (showDebugAndPreviewPanel && showInputsPanel)
-      setCurrentTab('INPUT')
-  }, [showDebugAndPreviewPanel, showInputsPanel])
+  const [height, setHieght] = useState(0)
+  const ref = useRef<HTMLDivElement>(null)
+
+  const adjustResultHeight = () => {
+    if (ref.current)
+      setHieght(ref.current?.clientHeight - 16 - 16 - 2 - 1)
+  }
 
   useEffect(() => {
-    if ((workflowRunningData?.result.status === WorkflowRunningStatus.Succeeded || workflowRunningData?.result.status === WorkflowRunningStatus.Failed) && !workflowRunningData.resultText)
-      switchTab('DETAIL')
-  }, [workflowRunningData])
+    adjustResultHeight()
+  }, [])
 
   return (
     <div className={`
@@ -48,9 +49,11 @@ const WorkflowPreview = () => {
     `}>
       <div className='flex items-center justify-between p-4 pb-1 text-base font-semibold text-gray-900'>
         {`Test Run${!workflowRunningData?.result.sequence_number ? '' : `#${workflowRunningData?.result.sequence_number}`}`}
-        <div className='p-1 cursor-pointer' onClick={() => handleCancelDebugAndPreviewPanel()}>
-          <XClose className='w-4 h-4 text-gray-500' />
-        </div>
+        {showInputsPanel && workflowRunningData?.result?.status !== WorkflowRunningStatus.Running && (
+          <div className='p-1 cursor-pointer' onClick={() => handleRunSetting(true)}>
+            <XClose className='w-4 h-4 text-gray-500' />
+          </div>
+        )}
       </div>
       <div className='grow relative flex flex-col'>
         <div className='shrink-0 flex items-center px-4 border-b-[0.5px] border-[rgba(0,0,0,0.05)]'>
@@ -100,19 +103,19 @@ const WorkflowPreview = () => {
             }}
           >{t('runLog.tracing')}</div>
         </div>
-        <div className={cn(
+        <div ref={ref} className={cn(
           'grow bg-white h-0 overflow-y-auto rounded-b-2xl',
           (currentTab === 'RESULT' || currentTab === 'TRACING') && '!bg-gray-50',
         )}>
-          {currentTab === 'INPUT' && showInputsPanel && (
+          {currentTab === 'INPUT' && (
             <InputsPanel onRun={() => switchTab('RESULT')} />
           )}
           {currentTab === 'RESULT' && (
-            <ResultText
+            <OutputPanel
               isRunning={workflowRunningData?.result?.status === WorkflowRunningStatus.Running || !workflowRunningData?.result}
-              outputs={workflowRunningData?.resultText}
+              outputs={workflowRunningData?.result?.outputs}
               error={workflowRunningData?.result?.error}
-              onClick={() => switchTab('DETAIL')}
+              height={height}
             />
           )}
           {currentTab === 'DETAIL' && (

@@ -138,7 +138,7 @@ class OAIAPICompatLargeLanguageModel(_CommonOAI_API_Compat, LargeLanguageModel):
                 endpoint_url,
                 headers=headers,
                 json=data,
-                timeout=(10, 300)
+                timeout=(10, 60)
             )
 
             if response.status_code != 200:
@@ -149,11 +149,6 @@ class OAIAPICompatLargeLanguageModel(_CommonOAI_API_Compat, LargeLanguageModel):
                 json_result = response.json()
             except json.JSONDecodeError as e:
                 raise CredentialsValidateFailedError('Credentials validation failed: JSON decode error')
-
-            if (completion_type is LLMMode.CHAT and json_result['object'] == ''):
-                json_result['object'] = 'chat.completion'
-            elif (completion_type is LLMMode.COMPLETION and json_result['object'] == ''):
-                json_result['object'] = 'text_completion'
 
             if (completion_type is LLMMode.CHAT
                     and ('object' not in json_result or json_result['object'] != 'chat.completion')):
@@ -334,7 +329,7 @@ class OAIAPICompatLargeLanguageModel(_CommonOAI_API_Compat, LargeLanguageModel):
             endpoint_url,
             headers=headers,
             json=data,
-            timeout=(10, 300),
+            timeout=(10, 60),
             stream=stream
         )
 
@@ -425,7 +420,6 @@ class OAIAPICompatLargeLanguageModel(_CommonOAI_API_Compat, LargeLanguageModel):
         finish_reason = 'Unknown'
 
         for chunk in response.iter_lines(decode_unicode=True, delimiter=delimiter):
-            chunk = chunk.strip()
             if chunk:
                 # ignore sse comments
                 if chunk.startswith(':'):

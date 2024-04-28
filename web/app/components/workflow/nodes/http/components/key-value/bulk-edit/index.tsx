@@ -37,7 +37,6 @@ const BulkEdit: FC<Props> = ({
   return (
     <div>
       <TextEditor
-        isInNode
         title={<div className='uppercase'>{t(`${i18nPrefix}.bulkEdit`)}</div>}
         value={tempValue}
         onChange={handleChange}

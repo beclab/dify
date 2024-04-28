@@ -201,7 +201,6 @@ const Result: FC<IResultProps> = ({
               status: WorkflowRunningStatus.Running,
               tracing: [],
               expand: false,
-              resultText: '',
             })
             setRespondingFalse()
           },
@@ -244,24 +243,14 @@ const Result: FC<IResultProps> = ({
             }))
             if (!data.outputs)
               setCompletionRes('')
-            else
+            else if (Object.keys(data.outputs).length > 1)
               setCompletionRes(data.outputs)
+            else
+              setCompletionRes(data.outputs[Object.keys(data.outputs)[0]])
             setRespondingFalse()
             setMessageId(tempMessageId)
             onCompleted(getCompletionRes(), taskId, true)
             isEnd = true
-          },
-          onTextChunk: (params) => {
-            const { data: { text } } = params
-            setWorkflowProccessData(produce(getWorkflowProccessData()!, (draft) => {
-              draft.resultText += text
-            }))
-          },
-          onTextReplace: (params) => {
-            const { data: { text } } = params
-            setWorkflowProccessData(produce(getWorkflowProccessData()!, (draft) => {
-              draft.resultText = text
-            }))
           },
         },
         isInstalledApp,

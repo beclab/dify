@@ -8,7 +8,6 @@ import {
   useIsChatMode,
   useNodesReadOnly,
 } from '../../hooks'
-import useAvailableVarList from '../_base/hooks/use-available-var-list'
 import type { LLMNodeType } from './types'
 import { Resolution } from '@/types/app'
 import { useModelListAndDefaultModelAndCurrentProviderAndModel, useTextGenerationCurrentProviderAndModelAndModelList } from '@/app/components/header/account-setting/model-provider-page/hooks'
@@ -207,24 +206,6 @@ const useConfig = (id: string, payload: LLMNodeType) => {
     setInputs(newInputs)
   }, [inputs, setInputs])
 
-  const handleSyeQueryChange = useCallback((newQuery: string) => {
-    const newInputs = produce(inputs, (draft) => {
-      if (!draft.memory) {
-        draft.memory = {
-          window: {
-            enabled: false,
-            size: 10,
-          },
-          query_prompt_template: newQuery,
-        }
-      }
-      else {
-        draft.memory.query_prompt_template = newQuery
-      }
-    })
-    setInputs(newInputs)
-  }, [inputs, setInputs])
-
   const handleVisionResolutionEnabledChange = useCallback((enabled: boolean) => {
     const newInputs = produce(inputs, (draft) => {
       if (!draft.vision) {
@@ -266,14 +247,6 @@ const useConfig = (id: string, payload: LLMNodeType) => {
   const filterVar = useCallback((varPayload: Var) => {
     return [VarType.arrayObject, VarType.array, VarType.string].includes(varPayload.type)
   }, [])
-
-  const {
-    availableVars,
-    availableNodes,
-  } = useAvailableVarList(id, {
-    onlyLeafNodeVar: false,
-    filterVar,
-  })
 
   // single run
   const {
@@ -349,10 +322,8 @@ const useConfig = (id: string, payload: LLMNodeType) => {
 
   const allVarStrArr = (() => {
     const arr = isChatModel ? (inputs.prompt_template as PromptItem[]).map(item => item.text) : [(inputs.prompt_template as PromptItem).text]
-    if (isChatMode && isChatModel && !!inputs.memory) {
+    if (isChatMode && isChatModel && !!inputs.memory)
       arr.push('{{#sys.query#}}')
-      arr.push(inputs.memory.query_prompt_template)
-    }
 
     return arr
   })()
@@ -375,11 +346,8 @@ const useConfig = (id: string, payload: LLMNodeType) => {
     handleContextVarChange,
     filterInputVar,
     filterVar,
-    availableVars,
-    availableNodes,
     handlePromptChange,
     handleMemoryChange,
-    handleSyeQueryChange,
     handleVisionResolutionEnabledChange,
     handleVisionResolutionChange,
     isShowSingleRun,

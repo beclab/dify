@@ -2,15 +2,14 @@ import type { FC } from 'react'
 import { memo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useStoreApi } from 'reactflow'
-import cn from 'classnames'
 import {
   useStore,
   useWorkflowStore,
 } from '../store'
 import {
   useIsChatMode,
+  useNodesReadOnly,
   useNodesSyncDraft,
-  useWorkflowInteractions,
   useWorkflowRun,
 } from '../hooks'
 import {
@@ -24,7 +23,6 @@ import {
 } from '@/app/components/base/icons/src/vender/line/mediaAndDevices'
 import { Loading02 } from '@/app/components/base/icons/src/vender/line/general'
 import { useFeaturesStore } from '@/app/components/base/features/hooks'
-import { MessagePlay } from '@/app/components/base/icons/src/vender/line/communication'
 
 const RunMode = memo(() => {
   const { t } = useTranslation()
@@ -33,13 +31,15 @@ const RunMode = memo(() => {
   const featuresStore = useFeaturesStore()
   const {
     handleStopRun,
+    handleRunSetting,
     handleRun,
   } = useWorkflowRun()
   const {
     doSyncWorkflowDraft,
+    handleSyncWorkflowDraft,
   } = useNodesSyncDraft()
-  const { handleCancelDebugAndPreviewPanel } = useWorkflowInteractions()
   const workflowRunningData = useStore(s => s.workflowRunningData)
+  const showInputsPanel = useStore(s => s.showInputsPanel)
   const isRunning = workflowRunningData?.result.status === WorkflowRunningStatus.Running
 
   const handleClick = useCallback(async () => {
@@ -55,44 +55,38 @@ const RunMode = memo(() => {
     const startNode = nodes.find(node => node.data.type === BlockEnum.Start)
     const startVariables = startNode?.data.variables || []
     const fileSettings = featuresStore!.getState().features.file
-    const {
-      showDebugAndPreviewPanel,
-      setShowDebugAndPreviewPanel,
-      setShowInputsPanel,
-    } = workflowStore.getState()
-
-    if (showDebugAndPreviewPanel) {
-      handleCancelDebugAndPreviewPanel()
-      return
-    }
 
     if (!startVariables.length && !fileSettings?.image?.enabled) {
       await doSyncWorkflowDraft()
+      handleRunSetting()
       handleRun({ inputs: {}, files: [] })
-      setShowDebugAndPreviewPanel(true)
-      setShowInputsPanel(false)
     }
     else {
-      setShowDebugAndPreviewPanel(true)
-      setShowInputsPanel(true)
+      workflowStore.setState({
+        historyWorkflowData: undefined,
+        showInputsPanel: true,
+      })
+      handleSyncWorkflowDraft(true)
     }
   }, [
     workflowStore,
+    handleSyncWorkflowDraft,
+    handleRunSetting,
     handleRun,
     doSyncWorkflowDraft,
     store,
     featuresStore,
-    handleCancelDebugAndPreviewPanel,
   ])
 
   return (
     <>
       <div
-        className={cn(
-          'flex items-center px-1.5 h-7 rounded-md text-[13px] font-medium text-primary-600',
-          'hover:bg-primary-50 cursor-pointer',
-          isRunning && 'bg-primary-50 !cursor-not-allowed',
-        )}
+        className={`
+          flex items-center px-1.5 h-7 rounded-md text-[13px] font-medium text-primary-600
+          hover:bg-primary-50 cursor-pointer
+          ${showInputsPanel && 'bg-primary-50'}
+          ${isRunning && 'bg-primary-50 !cursor-not-allowed'}
+        `}
         onClick={handleClick}
       >
         {
@@ -128,34 +122,38 @@ RunMode.displayName = 'RunMode'
 
 const PreviewMode = memo(() => {
   const { t } = useTranslation()
-  const workflowStore = useWorkflowStore()
-  const { handleCancelDebugAndPreviewPanel } = useWorkflowInteractions()
+  const { handleRunSetting } = useWorkflowRun()
+  const { handleSyncWorkflowDraft } = useNodesSyncDraft()
+  const { nodesReadOnly } = useNodesReadOnly()
 
   const handleClick = () => {
-    const {
-      showDebugAndPreviewPanel,
-      setShowDebugAndPreviewPanel,
-      setHistoryWorkflowData,
-    } = workflowStore.getState()
-
-    if (showDebugAndPreviewPanel)
-      handleCancelDebugAndPreviewPanel()
-    else
-      setShowDebugAndPreviewPanel(true)
-
-    setHistoryWorkflowData(undefined)
+    handleSyncWorkflowDraft(true)
+    handleRunSetting()
   }
 
   return (
     <div
-      className={cn(
-        'flex items-center px-1.5 h-7 rounded-md text-[13px] font-medium text-primary-600',
-        'hover:bg-primary-50 cursor-pointer',
-      )}
-      onClick={() => handleClick()}
+      className={`
+        flex items-center px-1.5 h-7 rounded-md text-[13px] font-medium text-primary-600
+        hover:bg-primary-50 cursor-pointer
+        ${nodesReadOnly && 'bg-primary-50 opacity-50 !cursor-not-allowed'}
+      `}
+      onClick={() => !nodesReadOnly && handleClick()}
     >
-      <MessagePlay className='mr-1 w-4 h-4' />
-      {t('workflow.common.debugAndPreview')}
+      {
+        nodesReadOnly
+          ? (
+            <>
+              {t('workflow.common.inPreview')}
+            </>
+          )
+          : (
+            <>
+              <Play className='mr-1 w-4 h-4' />
+              {t('workflow.common.preview')}
+            </>
+          )
+      }
     </div>
   )
 })

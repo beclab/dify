@@ -43,8 +43,7 @@ class SystemVariable(Enum):
     """
     QUERY = 'query'
     FILES = 'files'
-    CONVERSATION_ID = 'conversation_id'
-    USER_ID = 'user_id'
+    CONVERSATION = 'conversation'
 
     @classmethod
     def value_of(cls, value: str) -> 'SystemVariable':

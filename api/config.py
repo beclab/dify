@@ -5,7 +5,6 @@ import dotenv
 dotenv.load_dotenv()
 
 DEFAULTS = {
-    'EDITION': 'SELF_HOSTED',
     'DB_USERNAME': 'postgres',
     'DB_PASSWORD': '',
     'DB_HOST': 'localhost',
@@ -37,12 +36,8 @@ DEFAULTS = {
     'WEAVIATE_GRPC_ENABLED': 'True',
     'WEAVIATE_BATCH_SIZE': 100,
     'QDRANT_CLIENT_TIMEOUT': 20,
-    'QDRANT_GRPC_ENABLED': 'False',
     'CELERY_BACKEND': 'database',
     'LOG_LEVEL': 'INFO',
-    'LOG_FILE': '',
-    'LOG_FORMAT': '%(asctime)s.%(msecs)03d %(levelname)s [%(threadName)s] [%(filename)s:%(lineno)d] - %(message)s',
-    'LOG_DATEFORMAT': '%Y-%m-%d %H:%M:%S',
     'HOSTED_OPENAI_QUOTA_LIMIT': 200,
     'HOSTED_OPENAI_TRIAL_ENABLED': 'False',
     'HOSTED_OPENAI_TRIAL_MODELS': 'gpt-3.5-turbo,gpt-3.5-turbo-1106,gpt-3.5-turbo-instruct,gpt-3.5-turbo-16k,gpt-3.5-turbo-16k-0613,gpt-3.5-turbo-0613,gpt-3.5-turbo-0125,text-davinci-003',
@@ -69,13 +64,11 @@ DEFAULTS = {
     'ETL_TYPE': 'dify',
     'KEYWORD_STORE': 'jieba',
     'BATCH_UPLOAD_LIMIT': 20,
-    'CODE_EXECUTION_ENDPOINT': 'http://sandbox:8194',
-    'CODE_EXECUTION_API_KEY': 'dify-sandbox',
+    'CODE_EXECUTION_ENDPOINT': '',
+    'CODE_EXECUTION_API_KEY': '',
     'TOOL_ICON_CACHE_MAX_AGE': 3600,
     'MILVUS_DATABASE': 'default',
     'KEYWORD_DATA_SOURCE_TYPE': 'database',
-    'INNER_API': 'False',
-    'ENTERPRISE_ENABLED': 'False',
 }
 
 
@@ -106,15 +99,12 @@ class Config:
         # ------------------------
         # General Configurations.
         # ------------------------
-        self.CURRENT_VERSION = "0.6.5"
+        self.CURRENT_VERSION = "0.6.2"
         self.COMMIT_SHA = get_env('COMMIT_SHA')
-        self.EDITION = get_env('EDITION')
+        self.EDITION = "SELF_HOSTED"
         self.DEPLOY_ENV = get_env('DEPLOY_ENV')
         self.TESTING = False
         self.LOG_LEVEL = get_env('LOG_LEVEL')
-        self.LOG_FILE = get_env('LOG_FILE')
-        self.LOG_FORMAT = get_env('LOG_FORMAT')
-        self.LOG_DATEFORMAT = get_env('LOG_DATEFORMAT')
 
         # The backend URL prefix of the console API.
         # used to concatenate the login authorization callback or notion integration callback.
@@ -142,11 +132,6 @@ class Config:
         # You can generate a strong key using `openssl rand -base64 42`.
         # Alternatively you can set it with `SECRET_KEY` environment variable.
         self.SECRET_KEY = get_env('SECRET_KEY')
-
-        # Enable or disable the inner API.
-        self.INNER_API = get_bool_env('INNER_API')
-        # The inner API key is used to authenticate the inner API.
-        self.INNER_API_KEY = get_env('INNER_API_KEY')
 
         # cors settings
         self.CONSOLE_CORS_ALLOW_ORIGINS = get_cors_allow_origins(
@@ -210,12 +195,6 @@ class Config:
         self.AZURE_BLOB_ACCOUNT_KEY = get_env('AZURE_BLOB_ACCOUNT_KEY')
         self.AZURE_BLOB_CONTAINER_NAME = get_env('AZURE_BLOB_CONTAINER_NAME')
         self.AZURE_BLOB_ACCOUNT_URL = get_env('AZURE_BLOB_ACCOUNT_URL')
-        self.ALIYUN_OSS_BUCKET_NAME=get_env('ALIYUN_OSS_BUCKET_NAME')
-        self.ALIYUN_OSS_ACCESS_KEY=get_env('ALIYUN_OSS_ACCESS_KEY')
-        self.ALIYUN_OSS_SECRET_KEY=get_env('ALIYUN_OSS_SECRET_KEY')
-        self.ALIYUN_OSS_ENDPOINT=get_env('ALIYUN_OSS_ENDPOINT')
-        self.GOOGLE_STORAGE_BUCKET_NAME = get_env('GOOGLE_STORAGE_BUCKET_NAME')
-        self.GOOGLE_STORAGE_SERVICE_ACCOUNT_JSON_BASE64 = get_env('GOOGLE_STORAGE_SERVICE_ACCOUNT_JSON_BASE64')
 
         # ------------------------
         # Vector Store Configurations.
@@ -227,8 +206,6 @@ class Config:
         self.QDRANT_URL = get_env('QDRANT_URL')
         self.QDRANT_API_KEY = get_env('QDRANT_API_KEY')
         self.QDRANT_CLIENT_TIMEOUT = get_env('QDRANT_CLIENT_TIMEOUT')
-        self.QDRANT_GRPC_ENABLED = get_env('QDRANT_GRPC_ENABLED')
-        self.QDRANT_GRPC_PORT = get_env('QDRANT_GRPC_PORT')
 
         # milvus / zilliz setting
         self.MILVUS_HOST = get_env('MILVUS_HOST')
@@ -266,7 +243,7 @@ class Config:
         self.SMTP_USE_TLS = get_bool_env('SMTP_USE_TLS')
         
         # ------------------------
-        # Workspace Configurations.
+        # Workpace Configurations.
         # ------------------------
         self.INVITE_EXPIRY_HOURS = int(get_env('INVITE_EXPIRY_HOURS'))
 
@@ -305,12 +282,6 @@ class Config:
         # ------------------------
         # Platform Configurations.
         # ------------------------
-        self.GITHUB_CLIENT_ID = get_env('GITHUB_CLIENT_ID')
-        self.GITHUB_CLIENT_SECRET = get_env('GITHUB_CLIENT_SECRET')
-        self.GOOGLE_CLIENT_ID = get_env('GOOGLE_CLIENT_ID')
-        self.GOOGLE_CLIENT_SECRET = get_env('GOOGLE_CLIENT_SECRET')
-        self.OAUTH_REDIRECT_PATH = get_env('OAUTH_REDIRECT_PATH')
-
         self.HOSTED_OPENAI_API_KEY = get_env('HOSTED_OPENAI_API_KEY')
         self.HOSTED_OPENAI_API_BASE = get_env('HOSTED_OPENAI_API_BASE')
         self.HOSTED_OPENAI_API_ORGANIZATION = get_env('HOSTED_OPENAI_API_ORGANIZATION')
@@ -356,4 +327,16 @@ class Config:
         self.TOOL_ICON_CACHE_MAX_AGE = get_env('TOOL_ICON_CACHE_MAX_AGE')
 
         self.KEYWORD_DATA_SOURCE_TYPE = get_env('KEYWORD_DATA_SOURCE_TYPE')
-        self.ENTERPRISE_ENABLED = get_bool_env('ENTERPRISE_ENABLED')
+
+class CloudEditionConfig(Config):
+
+    def __init__(self):
+        super().__init__()
+
+        self.EDITION = "CLOUD"
+
+        self.GITHUB_CLIENT_ID = get_env('GITHUB_CLIENT_ID')
+        self.GITHUB_CLIENT_SECRET = get_env('GITHUB_CLIENT_SECRET')
+        self.GOOGLE_CLIENT_ID = get_env('GOOGLE_CLIENT_ID')
+        self.GOOGLE_CLIENT_SECRET = get_env('GOOGLE_CLIENT_SECRET')
+        self.OAUTH_REDIRECT_PATH = get_env('OAUTH_REDIRECT_PATH')

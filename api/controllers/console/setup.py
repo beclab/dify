@@ -58,8 +58,6 @@ class SetupApi(Resource):
             password=args['password']
         )
 
-        TenantService.create_owner_tenant_if_not_exist(account)
-
         setup()
         AccountService.update_last_login(account, request)
 

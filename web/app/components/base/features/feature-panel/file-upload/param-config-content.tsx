@@ -38,7 +38,7 @@ const ParamConfigContent = ({
     } = featuresStore!.getState()
     const newFeatures = produce(features, (draft) => {
       if (draft.file?.image) {
-        if (value === TransferMethod.all)
+        if (TransferMethod.all)
           draft.file.image.transfer_methods = [TransferMethod.remote_url, TransferMethod.local_file]
         else
           draft.file.image.transfer_methods = [value]

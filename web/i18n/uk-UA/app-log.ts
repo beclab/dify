@@ -77,15 +77,7 @@ const translation = {
     workflowTitle: 'Деталі Журналу',
   },
   promptLog: 'Журнал Запитань',
-  agentLog: 'Журнал агента',
-  viewLog: 'Переглянути журнал',
-  agentLogDetail: {
-    agentMode: 'Режим агента',
-    toolUsed: 'Використаний інструмент',
-    iterations: 'Ітерації',
-    iteration: 'Ітерація',
-    finalProcessing: 'Остаточна обробка',
-  },
+  viewLog: 'Переглянути Журнал',
 }
 
 export default translation

@@ -21,7 +21,7 @@ const LogAnnotation: FC<Props> = ({
 }) => {
   const { t } = useTranslation()
   const router = useRouter()
-  const appDetail = useAppStore(state => state.appDetail)
+  const { appDetail } = useAppStore()
 
   const options = [
     { value: PageType.log, text: t('appLog.title') },

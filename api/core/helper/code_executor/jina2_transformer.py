@@ -1,13 +1,10 @@
 import json
 import re
-from base64 import b64encode
 
 from core.helper.code_executor.template_transformer import TemplateTransformer
 
 PYTHON_RUNNER = """
 import jinja2
-from json import loads
-from base64 import b64decode
 
 template = jinja2.Template('''{{code}}''')
 
@@ -15,8 +12,7 @@ def main(**inputs):
     return template.render(**inputs)
 
 # execute main function, and return the result
-inputs = b64decode('{{inputs}}').decode('utf-8')
-output = main(**loads(inputs))
+output = main(**{{inputs}})
 
 result = f'''<<RESULT>>{output}<<RESULT>>'''
 
@@ -43,7 +39,6 @@ JINJA2_PRELOAD_TEMPLATE = """{% set fruits = ['Apple'] %}
 
 JINJA2_PRELOAD = f"""
 import jinja2
-from base64 import b64decode
 
 def _jinja2_preload_():
     # prepare jinja2 environment, load template and render before to avoid sandbox issue
@@ -65,11 +60,9 @@ class Jinja2TemplateTransformer(TemplateTransformer):
         :return:
         """
 
-        inputs_str = b64encode(json.dumps(inputs, ensure_ascii=False).encode()).decode('utf-8')
-
         # transform jinja2 template to python code
         runner = PYTHON_RUNNER.replace('{{code}}', code)
-        runner = runner.replace('{{inputs}}', inputs_str)
+        runner = runner.replace('{{inputs}}', json.dumps(inputs, indent=4, ensure_ascii=False))
 
         return runner, JINJA2_PRELOAD
 

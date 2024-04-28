@@ -26,13 +26,10 @@ class LoginApi(Resource):
 
         try:
             account = AccountService.authenticate(args['email'], args['password'])
-        except services.errors.account.AccountLoginError as e:
-            return {'code': 'unauthorized', 'message': str(e)}, 401
+        except services.errors.account.AccountLoginError:
+            return {'code': 'unauthorized', 'message': 'Invalid email or password'}, 401
 
-        # SELF_HOSTED only have one workspace
-        tenants = TenantService.get_join_tenants(account)
-        if len(tenants) == 0:
-            return {'result': 'fail', 'data': 'workspace not found, please contact system admin to invite you to join in a workspace'}
+        TenantService.create_owner_tenant_if_not_exist(account)
 
         AccountService.update_last_login(account, request)
 

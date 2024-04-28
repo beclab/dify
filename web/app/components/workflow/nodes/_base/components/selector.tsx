@@ -14,7 +14,6 @@ type Props = {
   DropDownIcon?: any
   noLeft?: boolean
   options: Item[]
-  allOptions?: Item[]
   value: string
   placeholder?: string
   onChange: (value: any) => void
@@ -31,7 +30,6 @@ const TypeSelector: FC<Props> = ({
   DropDownIcon = ChevronSelectorVertical,
   noLeft,
   options: list,
-  allOptions,
   value,
   placeholder = '',
   onChange,
@@ -43,7 +41,7 @@ const TypeSelector: FC<Props> = ({
   showChecked,
 }) => {
   const noValue = value === '' || value === undefined || value === null
-  const item = allOptions ? allOptions.find(item => item.value === value) : list.find(item => item.value === value)
+  const item = list.find(item => item.value === value)
   const [showOption, { setFalse: setHide, toggle: toggleShow }] = useBoolean(false)
   const ref = React.useRef(null)
   useClickAway(() => {

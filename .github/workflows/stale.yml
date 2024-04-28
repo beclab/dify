@@ -6,8 +6,11 @@
 name: Mark stale issues and pull requests
 
 on:
-  schedule:
-    - cron: '0 3 * * *'
+  # just seize the location, indeed only 'schedule' by official
+  workflow_dispatch:
+
+#  schedule:
+#    - cron: '0 3 * * *'
 
 jobs:
   stale:

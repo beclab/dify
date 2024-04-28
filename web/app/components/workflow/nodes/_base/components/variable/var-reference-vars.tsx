@@ -208,24 +208,18 @@ const VarReferenceVars: FC<Props> = ({
   const filteredVars = vars.filter((v) => {
     const children = v.vars.filter(v => checkKeys([v.variable], false).isValid || v.variable.startsWith('sys.'))
     return children.length > 0
-  }).filter((node) => {
+  }).filter((v) => {
     if (!searchText)
-      return node
-    const children = node.vars.filter((v) => {
-      const searchTextLower = searchText.toLowerCase()
-      return v.variable.toLowerCase().includes(searchTextLower) || node.title.toLowerCase().includes(searchTextLower)
-    })
+      return v
+    const children = v.vars.filter(v => v.variable.toLowerCase().includes(searchText.toLowerCase()))
     return children.length > 0
-  }).map((node) => {
-    let vars = node.vars.filter(v => checkKeys([v.variable], false).isValid || v.variable.startsWith('sys.'))
-    if (searchText) {
-      const searchTextLower = searchText.toLowerCase()
-      if (!node.title.toLowerCase().includes(searchTextLower))
-        vars = vars.filter(v => v.variable.toLowerCase().includes(searchText.toLowerCase()))
-    }
+  }).map((v) => {
+    let vars = v.vars.filter(v => checkKeys([v.variable], false).isValid || v.variable.startsWith('sys.'))
+    if (searchText)
+      vars = vars.filter(v => v.variable.toLowerCase().includes(searchText.toLowerCase()))
 
     return {
-      ...node,
+      ...v,
       vars,
     }
   })
@@ -272,7 +266,7 @@ const VarReferenceVars: FC<Props> = ({
       }
 
       {filteredVars.length > 0
-        ? <div className='max-h-[85vh] overflow-y-auto'>
+        ? <div>
 
           {
             filteredVars.map((item, i) => (

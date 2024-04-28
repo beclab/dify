@@ -1,8 +1,6 @@
 import type { AnnotationReplyConfig, ChatPromptConfig, CompletionPromptConfig, DatasetConfigs, PromptMode } from '@/models/debug'
 import type { CollectionType } from '@/app/components/tools/types'
 import type { LanguagesSupported } from '@/i18n/language'
-import type { Tag } from '@/app/components/base/tag-management/constant'
-
 export enum ProviderType {
   openai = 'openai',
   anthropic = 'anthropic',
@@ -35,7 +33,6 @@ export enum RETRIEVE_METHOD {
   fullText = 'full_text_search',
   hybrid = 'hybrid_search',
   invertedIndex = 'invertedIndex',
-  keywordSearch = 'keyword_search',
 }
 
 export type VariableInput = {
@@ -311,7 +308,6 @@ export type App = {
   site: SiteConfig
   /** api site url */
   api_base_url: string
-  tags: Tag[]
 }
 
 /**

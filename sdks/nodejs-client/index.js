@@ -37,11 +37,7 @@ export const routes = {
   fileUpload: {
     method: "POST",
     url: () => `/files/upload`,
-  },
-  runWorkflow: {
-    method: "POST",
-    url: () => `/workflows/run`,
-  },
+  }
 };
 
 export class DifyClient {
@@ -142,21 +138,6 @@ export class CompletionClient extends DifyClient {
     return this.sendRequest(
       routes.createCompletionMessage.method,
       routes.createCompletionMessage.url(),
-      data,
-      null,
-      stream
-    );
-  }
-
-  runWorkflow(inputs, user, stream = false, files = null) {
-    const data = {
-      inputs,
-      user,
-      response_mode: stream ? "streaming" : "blocking",
-    };
-    return this.sendRequest(
-      routes.runWorkflow.method,
-      routes.runWorkflow.url(),
       data,
       null,
       stream

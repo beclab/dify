@@ -11,7 +11,6 @@ from core.model_runtime.entities.model_entities import ModelType
 from core.model_runtime.errors.validate import CredentialsValidateFailedError
 from core.model_runtime.utils.encoders import jsonable_encoder
 from libs.login import login_required
-from models.account import TenantAccountRole
 from services.model_provider_service import ModelProviderService
 
 
@@ -95,7 +94,7 @@ class ModelProviderModelApi(Resource):
     @login_required
     @account_initialization_required
     def post(self, provider: str):
-        if not TenantAccountRole.is_privileged_role(current_user.current_tenant.current_role):
+        if current_user.current_tenant.current_role not in ['admin', 'owner']:
             raise Forbidden()
 
         tenant_id = current_user.current_tenant_id
@@ -126,7 +125,7 @@ class ModelProviderModelApi(Resource):
     @login_required
     @account_initialization_required
     def delete(self, provider: str):
-        if not TenantAccountRole.is_privileged_role(current_user.current_tenant.current_role):
+        if current_user.current_tenant.current_role not in ['admin', 'owner']:
             raise Forbidden()
 
         tenant_id = current_user.current_tenant_id

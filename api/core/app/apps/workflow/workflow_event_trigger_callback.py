@@ -6,7 +6,6 @@ from core.app.entities.queue_entities import (
     QueueNodeFailedEvent,
     QueueNodeStartedEvent,
     QueueNodeSucceededEvent,
-    QueueTextChunkEvent,
     QueueWorkflowFailedEvent,
     QueueWorkflowStartedEvent,
     QueueWorkflowSucceededEvent,
@@ -120,15 +119,7 @@ class WorkflowEventTriggerCallback(BaseWorkflowCallback):
         """
         Publish text chunk
         """
-        self._queue_manager.publish(
-            QueueTextChunkEvent(
-                text=text,
-                metadata={
-                    "node_id": node_id,
-                    **metadata
-                }
-            ), PublishFrom.APPLICATION_MANAGER
-        )
+        pass
 
     def on_event(self, event: AppQueueEvent) -> None:
         """

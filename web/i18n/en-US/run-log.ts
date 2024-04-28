@@ -18,12 +18,6 @@ const translation = {
     tokens: 'Total Tokens',
     steps: 'Run Steps',
   },
-  resultEmpty: {
-    title: 'This run only output JSON format,',
-    tipLeft: 'please go to the ',
-    link: 'detail panel',
-    tipRight: ' view it.',
-  },
 }
 
 export default translation

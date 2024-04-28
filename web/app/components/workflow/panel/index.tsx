@@ -1,15 +1,13 @@
 import type { FC } from 'react'
-import { memo } from 'react'
+import {
+  memo,
+  useMemo,
+} from 'react'
 import { useNodes } from 'reactflow'
-import cn from 'classnames'
-import { useShallow } from 'zustand/react/shallow'
 import type { CommonNodeType } from '../types'
 import { Panel as NodePanel } from '../nodes'
 import { useStore } from '../store'
-import {
-  useIsChatMode,
-  useWorkflow,
-} from '../hooks'
+import { useIsChatMode } from '../hooks'
 import DebugAndPreview from './debug-and-preview'
 import Record from './record'
 import WorkflowPreview from './workflow-preview'
@@ -21,30 +19,30 @@ const Panel: FC = () => {
   const nodes = useNodes<CommonNodeType>()
   const isChatMode = useIsChatMode()
   const selectedNode = nodes.find(node => node.data.selected)
+  const showInputsPanel = useStore(s => s.showInputsPanel)
+  const workflowRunningData = useStore(s => s.workflowRunningData)
   const historyWorkflowData = useStore(s => s.historyWorkflowData)
-  const showDebugAndPreviewPanel = useStore(s => s.showDebugAndPreviewPanel)
-  const isRestoring = useStore(s => s.isRestoring)
+  const { currentLogItem, setCurrentLogItem, showMessageLogModal, setShowMessageLogModal } = useAppStore()
   const {
-    enableShortcuts,
-    disableShortcuts,
-  } = useWorkflow()
-  const { currentLogItem, setCurrentLogItem, showMessageLogModal, setShowMessageLogModal } = useAppStore(useShallow(state => ({
-    currentLogItem: state.currentLogItem,
-    setCurrentLogItem: state.setCurrentLogItem,
-    showMessageLogModal: state.showMessageLogModal,
-    setShowMessageLogModal: state.setShowMessageLogModal,
-  })))
+    showNodePanel,
+    showDebugAndPreviewPanel,
+    showWorkflowPreview,
+  } = useMemo(() => {
+    return {
+      showNodePanel: !!selectedNode && !workflowRunningData && !historyWorkflowData && !showInputsPanel,
+      showDebugAndPreviewPanel: isChatMode && workflowRunningData && !historyWorkflowData,
+      showWorkflowPreview: !isChatMode && !historyWorkflowData && (workflowRunningData || showInputsPanel),
+    }
+  }, [
+    showInputsPanel,
+    selectedNode,
+    isChatMode,
+    workflowRunningData,
+    historyWorkflowData,
+  ])
 
   return (
-    <div
-      tabIndex={-1}
-      className={cn(
-        'absolute top-14 right-0 bottom-2 flex z-10 outline-none',
-      )}
-      onFocus={disableShortcuts}
-      onBlur={enableShortcuts}
-      key={`${isRestoring}`}
-    >
+    <div className='absolute top-14 right-0 bottom-2 flex z-10'>
       {
         showMessageLogModal && (
           <MessageLogModal
@@ -59,11 +57,6 @@ const Panel: FC = () => {
         )
       }
       {
-        !!selectedNode && (
-          <NodePanel {...selectedNode!} />
-        )
-      }
-      {
         historyWorkflowData && !isChatMode && (
           <Record />
         )
@@ -74,13 +67,18 @@ const Panel: FC = () => {
         )
       }
       {
-        showDebugAndPreviewPanel && isChatMode && (
+        showDebugAndPreviewPanel && (
           <DebugAndPreview />
         )
       }
       {
-        showDebugAndPreviewPanel && !isChatMode && (
+        showWorkflowPreview && (
           <WorkflowPreview />
+        )
+      }
+      {
+        showNodePanel && (
+          <NodePanel {...selectedNode!} />
         )
       }
     </div>

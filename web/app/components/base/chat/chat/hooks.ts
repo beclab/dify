@@ -322,7 +322,6 @@ export const useChat = (
                 }
                 draft[index] = {
                   ...draft[index],
-                  content: newResponseItem.answer,
                   log: [
                     ...newResponseItem.message,
                     ...(newResponseItem.message[newResponseItem.message.length - 1].role !== 'assistant'
@@ -339,12 +338,6 @@ export const useChat = (
                     time: dayjs.unix(newResponseItem.created_at).format('hh:mm A'),
                     tokens: newResponseItem.answer_tokens + newResponseItem.message_tokens,
                     latency: newResponseItem.provider_response_latency.toFixed(2),
-                  },
-                  // for agent log
-                  conversationId: connversationId.current,
-                  input: {
-                    inputs: newResponseItem.inputs,
-                    query: newResponseItem.query,
                   },
                 }
               }

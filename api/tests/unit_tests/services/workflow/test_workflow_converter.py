@@ -4,17 +4,9 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from core.app.app_config.entities import (
-    AdvancedChatMessageEntity,
-    AdvancedChatPromptTemplateEntity,
-    AdvancedCompletionPromptTemplateEntity,
-    DatasetEntity,
-    DatasetRetrieveConfigEntity,
-    ExternalDataVariableEntity,
-    ModelConfigEntity,
-    PromptTemplateEntity,
-    VariableEntity,
-)
+from core.app.app_config.entities import VariableEntity, ExternalDataVariableEntity, DatasetEntity, \
+    DatasetRetrieveConfigEntity, ModelConfigEntity, PromptTemplateEntity, AdvancedChatPromptTemplateEntity, \
+    AdvancedChatMessageEntity, AdvancedCompletionPromptTemplateEntity
 from core.helper import encrypter
 from core.model_runtime.entities.llm_entities import LLMMode
 from core.model_runtime.entities.message_entities import PromptMessageRole
@@ -89,7 +81,7 @@ def test__convert_to_http_request_node_for_chatbot(default_variables):
         )
     ]
 
-    nodes, _ = workflow_converter._convert_to_http_request_node(
+    nodes = workflow_converter._convert_to_http_request_node(
         app_model=app_model,
         variables=default_variables,
         external_data_variables=external_data_variables
@@ -159,7 +151,7 @@ def test__convert_to_http_request_node_for_workflow_app(default_variables):
         )
     ]
 
-    nodes, _ = workflow_converter._convert_to_http_request_node(
+    nodes = workflow_converter._convert_to_http_request_node(
         app_model=app_model,
         variables=default_variables,
         external_data_variables=external_data_variables

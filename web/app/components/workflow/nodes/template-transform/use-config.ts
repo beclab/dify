@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect } from 'react'
 import produce from 'immer'
 import useVarList from '../_base/hooks/use-var-list'
-import type { Var, Variable } from '../../types'
+import type { Var } from '../../types'
 import { VarType } from '../../types'
 import { useStore } from '../../store'
 import type { TemplateTransformNodeType } from './types'
@@ -15,24 +15,11 @@ const useConfig = (id: string, payload: TemplateTransformNodeType) => {
   const { nodesReadOnly: readOnly } = useNodesReadOnly()
   const defaultConfig = useStore(s => s.nodesDefaultConfigs)[payload.type]
 
-  const { inputs, setInputs: doSetInputs } = useNodeCrud<TemplateTransformNodeType>(id, payload)
-  const inputsRef = useRef(inputs)
-  const setInputs = useCallback((newPayload: TemplateTransformNodeType) => {
-    doSetInputs(newPayload)
-    inputsRef.current = newPayload
-  }, [doSetInputs])
-
-  const { handleVarListChange, handleAddVariable: handleAddEmptyVariable } = useVarList<TemplateTransformNodeType>({
+  const { inputs, setInputs } = useNodeCrud<TemplateTransformNodeType>(id, payload)
+  const { handleVarListChange, handleAddVariable } = useVarList<TemplateTransformNodeType>({
     inputs,
     setInputs,
   })
-
-  const handleAddVariable = useCallback((payload: Variable) => {
-    const newInputs = produce(inputsRef.current, (draft: any) => {
-      draft.variables.push(payload)
-    })
-    setInputs(newInputs)
-  }, [setInputs])
 
   useEffect(() => {
     if (inputs.template)
@@ -49,11 +36,11 @@ const useConfig = (id: string, payload: TemplateTransformNodeType) => {
   }, [defaultConfig])
 
   const handleCodeChange = useCallback((template: string) => {
-    const newInputs = produce(inputsRef.current, (draft: any) => {
+    const newInputs = produce(inputs, (draft: any) => {
       draft.template = template
     })
     setInputs(newInputs)
-  }, [setInputs])
+  }, [inputs, setInputs])
 
   // single run
   const {
@@ -95,7 +82,6 @@ const useConfig = (id: string, payload: TemplateTransformNodeType) => {
     inputs,
     handleVarListChange,
     handleAddVariable,
-    handleAddEmptyVariable,
     handleCodeChange,
     filterVar,
     // single run

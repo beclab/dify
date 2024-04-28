@@ -113,13 +113,12 @@ class ToolParameterConfigurationManager(BaseModel):
     tool_runtime: Tool
     provider_name: str
     provider_type: str
-    identity_id: str
 
     def _deep_copy(self, parameters: dict[str, Any]) -> dict[str, Any]:
         """
         deep copy parameters
         """
-        return deepcopy(parameters)
+        return {key: value for key, value in parameters.items()}
     
     def _merge_parameters(self) -> list[ToolParameter]:
         """
@@ -177,8 +176,6 @@ class ToolParameterConfigurationManager(BaseModel):
         # override parameters
         current_parameters = self._merge_parameters()
 
-        parameters = self._deep_copy(parameters)
-
         for parameter in current_parameters:
             if parameter.form == ToolParameter.ToolParameterForm.FORM and parameter.type == ToolParameter.ToolParameterType.SECRET_INPUT:
                 if parameter.name in parameters:
@@ -197,8 +194,7 @@ class ToolParameterConfigurationManager(BaseModel):
             tenant_id=self.tenant_id, 
             provider=f'{self.provider_type}.{self.provider_name}',
             tool_name=self.tool_runtime.identity.name,
-            cache_type=ToolParameterCacheType.PARAMETER,
-            identity_id=self.identity_id
+            cache_type=ToolParameterCacheType.PARAMETER
         )
         cached_parameters = cache.get()
         if cached_parameters:
@@ -227,8 +223,7 @@ class ToolParameterConfigurationManager(BaseModel):
             tenant_id=self.tenant_id, 
             provider=f'{self.provider_type}.{self.provider_name}',
             tool_name=self.tool_runtime.identity.name,
-            cache_type=ToolParameterCacheType.PARAMETER,
-            identity_id=self.identity_id
+            cache_type=ToolParameterCacheType.PARAMETER
         )
         cache.delete()
 

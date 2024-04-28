@@ -182,7 +182,6 @@ const useOneStepRun = <T>({
     finally {
       setRunResult({
         ...res,
-        total_tokens: res.execution_metadata?.total_tokens || 0,
         created_by: res.created_by_account?.name || '',
       })
     }

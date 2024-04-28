@@ -82,6 +82,7 @@ const useLazyLoad = (ref: RefObject<Element>): boolean => {
 }
 
 export function Markdown(props: { content: string; className?: string }) {
+  const [isCopied, setIsCopied] = useState(false)
   const [isSVG, setIsSVG] = useState(false)
   return (
     <div className={cn(props.className, 'markdown-body')}>
@@ -91,7 +92,7 @@ export function Markdown(props: { content: string; className?: string }) {
           RehypeKatex,
         ]}
         components={{
-          code({ inline, className, children, ...props }) {
+          code({ node, inline, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || '')
             const language = match?.[1]
             const languageShowName = getCorrectCapitalizationLanguageName(language || '')

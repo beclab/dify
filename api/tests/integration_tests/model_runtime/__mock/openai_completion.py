@@ -1,10 +1,9 @@
 import re
-from collections.abc import Generator
 from time import sleep, time
-
 # import monkeypatch
-from typing import Any, Literal, Optional, Union
+from typing import Any, Generator, List, Literal, Optional, Union
 
+from core.model_runtime.errors.invoke import InvokeAuthorizationError
 from openai import AzureOpenAI, BadRequestError, OpenAI
 from openai._types import NOT_GIVEN, NotGiven
 from openai.resources.completions import Completions
@@ -12,10 +11,8 @@ from openai.types import Completion as CompletionMessage
 from openai.types.completion import CompletionChoice
 from openai.types.completion_usage import CompletionUsage
 
-from core.model_runtime.errors.invoke import InvokeAuthorizationError
 
-
-class MockCompletionsClass:
+class MockCompletionsClass(object):
     @staticmethod
     def mocked_openai_completion_create_sync(
         model: str
@@ -93,7 +90,7 @@ class MockCompletionsClass:
                 "code-davinci-002", "text-curie-001", "text-babbage-001",
                 "text-ada-001"],
         ],
-        prompt: Union[str, list[str], list[int], list[list[int]], None],
+        prompt: Union[str, List[str], List[int], List[List[int]], None],
         stream: Optional[Literal[False]] | NotGiven = NOT_GIVEN,
         **kwargs: Any
     ):

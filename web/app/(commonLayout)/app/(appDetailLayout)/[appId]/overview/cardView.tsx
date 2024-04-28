@@ -26,8 +26,7 @@ export type ICardViewProps = {
 const CardView: FC<ICardViewProps> = ({ appId }) => {
   const { t } = useTranslation()
   const { notify } = useContext(ToastContext)
-  const appDetail = useAppStore(state => state.appDetail)
-  const setAppDetail = useAppStore(state => state.setAppDetail)
+  const { appDetail, setAppDetail } = useAppStore()
 
   const updateAppDetail = async () => {
     fetchAppDetail({ url: '/apps', id: appId }).then((res) => {

@@ -29,7 +29,6 @@ const AdvancedSetting: FC<Props> = ({
   return (
     <>
       <TextEditor
-        isInNode
         title={t(`${i18nPrefix}.instruction`)!}
         value={instruction}
         onChange={onInstructionChange}

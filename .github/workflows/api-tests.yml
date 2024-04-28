@@ -2,17 +2,12 @@ name: Run Pytest
 
 on:
   pull_request:
-    branches:
-      - main
+#    branches:
+#      - main
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version:
-          - "3.10"
-          - "3.11"
 
     env:
       OPENAI_API_KEY: sk-IamNotARealKeyJustForMockTestKawaiiiiiiiiii
@@ -37,10 +32,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.10'
           cache: 'pip'
           cache-dependency-path: |
             ./api/requirements.txt
@@ -49,31 +44,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r ./api/requirements.txt -r ./api/requirements-dev.txt
 
-      - name: Run Unit tests
-        run: dev/pytest/pytest_unit_tests.sh
-
       - name: Run ModelRuntime
-        run: dev/pytest/pytest_model_runtime.sh
+        run: pytest api/tests/integration_tests/model_runtime/anthropic api/tests/integration_tests/model_runtime/azure_openai api/tests/integration_tests/model_runtime/openai api/tests/integration_tests/model_runtime/chatglm api/tests/integration_tests/model_runtime/google api/tests/integration_tests/model_runtime/xinference api/tests/integration_tests/model_runtime/huggingface_hub/test_llm.py
 
       - name: Run Tool
-        run: dev/pytest/pytest_tools.sh
+        run: pytest api/tests/integration_tests/tools/test_all_provider.py
 
       - name: Run Workflow
-        run: dev/pytest/pytest_workflow.sh
-
-      - name: Set up Vector Stores (Weaviate, Qdrant and Milvus)
-        uses: hoverkraft-tech/compose-action@v2.0.0
-        with:
-          compose-file: |
-            docker/docker-compose.middleware.yaml
-            docker/docker-compose.qdrant.yaml
-            docker/docker-compose.milvus.yaml
-          services: |
-            weaviate
-            qdrant
-            etcd
-            minio
-            milvus-standalone
-
-      - name: Test Vector Stores
-        run: dev/pytest/pytest_vdb.sh
+        run: pytest api/tests/integration_tests/workflow

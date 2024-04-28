@@ -7,7 +7,6 @@ import {
   useEdges,
   useNodes,
 } from 'reactflow'
-import cn from 'classnames'
 import BlockIcon from '../block-icon'
 import {
   useChecklist,
@@ -29,12 +28,7 @@ import {
 } from '@/app/components/base/icons/src/vender/line/general'
 import { AlertTriangle } from '@/app/components/base/icons/src/vender/line/alertsAndFeedback'
 
-type WorkflowChecklistProps = {
-  disabled: boolean
-}
-const WorkflowChecklist = ({
-  disabled,
-}: WorkflowChecklistProps) => {
+const WorkflowChecklist = () => {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const nodes = useNodes<CommonNodeType>()
@@ -52,13 +46,8 @@ const WorkflowChecklist = ({
       open={open}
       onOpenChange={setOpen}
     >
-      <PortalToFollowElemTrigger onClick={() => !disabled && setOpen(v => !v)}>
-        <div
-          className={cn(
-            'relative flex items-center justify-center p-0.5 w-8 h-8 rounded-lg border-[0.5px] border-gray-200 bg-white shadow-xs',
-            disabled && 'opacity-50 cursor-not-allowed',
-          )}
-        >
+      <PortalToFollowElemTrigger onClick={() => setOpen(v => !v)}>
+        <div className='relative flex items-center justify-center p-0.5 w-8 h-8 rounded-lg border-[0.5px] border-gray-200 bg-white shadow-xs'>
           <div
             className={`
               group flex items-center justify-center w-full h-full rounded-md cursor-pointer 

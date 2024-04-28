@@ -49,9 +49,6 @@ const translation = {
     processData: '数据处理',
     input: '输入',
     output: '输出',
-    jinjaEditorPlaceholder: '输入 “/” 或 “{” 插入变量',
-    viewOnly: '只读',
-    showRunHistory: '显示运行历史',
   },
   errorMsg: {
     fieldRequired: '{{field}} 不能为空',
@@ -207,7 +204,6 @@ const translation = {
       singleRun: {
         variable: '变量',
       },
-      sysQueryInUser: 'user message 中必须包含 sys.query',
     },
     knowledgeRetrieval: {
       queryVariable: '查询变量',

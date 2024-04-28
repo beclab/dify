@@ -1,8 +1,8 @@
 import { useContext } from 'react'
 import {
+  create,
   useStore as useZustandStore,
 } from 'zustand'
-import { createStore } from 'zustand/vanilla'
 import { debounce } from 'lodash-es'
 import type { Viewport } from 'reactflow'
 import type {
@@ -19,18 +19,12 @@ import type {
 } from './types'
 import { WorkflowContext } from './context'
 
-type PreviewRunningData = WorkflowRunningData & {
-  resultTabActive?: boolean
-  resultText?: string
-}
-
 type Shape = {
   appId: string
-  panelWidth: number
-  workflowRunningData?: PreviewRunningData
-  setWorkflowRunningData: (workflowData: PreviewRunningData) => void
+  workflowRunningData?: WorkflowRunningData
+  setWorkflowRunningData: (workflowData: WorkflowRunningData) => void
   historyWorkflowData?: HistoryWorkflowData
-  setHistoryWorkflowData: (historyWorkflowData?: HistoryWorkflowData) => void
+  setHistoryWorkflowData: (historyWorkflowData: HistoryWorkflowData) => void
   showRunHistory: boolean
   setShowRunHistory: (showRunHistory: boolean) => void
   showFeaturesPanel: boolean
@@ -73,15 +67,12 @@ type Shape = {
   setClipboardElements: (clipboardElements: Node[]) => void
   shortcutsDisabled: boolean
   setShortcutsDisabled: (shortcutsDisabled: boolean) => void
-  showDebugAndPreviewPanel: boolean
-  setShowDebugAndPreviewPanel: (showDebugAndPreviewPanel: boolean) => void
 }
 
 export const createWorkflowStore = () => {
-  return createStore<Shape>(set => ({
+  return create<Shape>(set => ({
     appId: '',
-    panelWidth: localStorage.getItem('workflow-node-panel-width') ? parseFloat(localStorage.getItem('workflow-node-panel-width')!) : 420,
-    workflowRunningData: undefined,
+    workflowData: undefined,
     setWorkflowRunningData: workflowRunningData => set(() => ({ workflowRunningData })),
     historyWorkflowData: undefined,
     setHistoryWorkflowData: historyWorkflowData => set(() => ({ historyWorkflowData })),
@@ -124,8 +115,6 @@ export const createWorkflowStore = () => {
     setClipboardElements: clipboardElements => set(() => ({ clipboardElements })),
     shortcutsDisabled: false,
     setShortcutsDisabled: shortcutsDisabled => set(() => ({ shortcutsDisabled })),
-    showDebugAndPreviewPanel: false,
-    setShowDebugAndPreviewPanel: showDebugAndPreviewPanel => set(() => ({ showDebugAndPreviewPanel })),
   }))
 }
 

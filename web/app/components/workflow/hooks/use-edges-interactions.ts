@@ -201,20 +201,6 @@ export const useEdgesInteractions = () => {
     setEdges(newEdges)
   }, [store])
 
-  const handleEdgeCancelRunningStatus = useCallback(() => {
-    const {
-      edges,
-      setEdges,
-    } = store.getState()
-
-    const newEdges = produce(edges, (draft) => {
-      draft.forEach((edge) => {
-        edge.data._runned = false
-      })
-    })
-    setEdges(newEdges)
-  }, [store])
-
   return {
     handleEdgeEnter,
     handleEdgeLeave,
@@ -222,6 +208,5 @@ export const useEdgesInteractions = () => {
     handleEdgeDelete,
     handleEdgesChange,
     handleVariableAssignerEdgesChange,
-    handleEdgeCancelRunningStatus,
   }
 }

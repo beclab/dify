@@ -77,15 +77,7 @@ const translation = {
     workflowTitle: 'Détail du journal',
   },
   promptLog: 'Journal de consigne',
-  agentLog: 'Journal des agents',
   viewLog: 'Voir le journal',
-  agentLogDetail: {
-    agentMode: 'Mode Agent',
-    toolUsed: 'Outil utilisé',
-    iterations: 'Itérations',
-    iteration: 'Itération',
-    finalProcessing: 'Traitement final',
-  },
 }
 
 export default translation

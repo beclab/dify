@@ -2,8 +2,8 @@ name: Run Unit Test For SDKs
 
 on:
   pull_request:
-    branches:
-      - main
+#    branches:
+#      - main
 jobs:
   build:
     name: unit test for Node.js SDK

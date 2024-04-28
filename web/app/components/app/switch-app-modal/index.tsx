@@ -35,7 +35,7 @@ const SwitchAppModal = ({ show, appDetail, inAppDetail = false, onSuccess, onClo
   const { push, replace } = useRouter()
   const { t } = useTranslation()
   const { notify } = useContext(ToastContext)
-  const setAppDetail = useAppStore(s => s.setAppDetail)
+  const { setAppDetail } = useAppStore()
 
   const { isCurrentWorkspaceManager } = useAppContext()
   const { plan, enableBilling } = useProviderContext()

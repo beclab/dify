@@ -31,7 +31,6 @@ const ClassItem: FC<Props> = ({
 
   return (
     <TextEditor
-      isInNode
       title={<div>
         <div className='w-[200px]'>
           <div

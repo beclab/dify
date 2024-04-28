@@ -44,31 +44,27 @@ class BingSearchTool(BuiltinTool):
             results = []
             if search_results:
                 for result in search_results:
-                    url = f': {result["url"]}' if "url" in result else ""
                     results.append(self.create_text_message(
-                        text=f'{result["name"]}{url}'
+                        text=f'{result["name"]}: {result["url"]}'
                     ))
 
 
             if entities:
                 for entity in entities:
-                    url = f': {entity["url"]}' if "url" in entity else ""
                     results.append(self.create_text_message(
-                        text=f'{entity.get("name", "")}{url}'
+                        text=f'{entity["name"]}: {entity["url"]}'
                     ))
 
             if news:
                 for news_item in news:
-                    url = f': {news_item["url"]}' if "url" in news_item else ""
                     results.append(self.create_text_message(
-                        text=f'{news_item.get("name", "")}{url}'
+                        text=f'{news_item["name"]}: {news_item["url"]}'
                     ))
 
             if related_searches:
                 for related in related_searches:
-                    url = f': {related["displayText"]}' if "displayText" in related else ""
                     results.append(self.create_text_message(
-                        text=f'{related.get("displayText", "")}{url}'
+                        text=f'{related["displayText"]}: {related["webSearchUrl"]}'
                     ))
                     
             return results
@@ -77,7 +73,7 @@ class BingSearchTool(BuiltinTool):
             text = ''
             if search_results:
                 for i, result in enumerate(search_results):
-                    text += f'{i+1}: {result.get("name", "")} - {result.get("snippet", "")}\n'
+                    text += f'{i+1}: {result["name"]} - {result["snippet"]}\n'
 
             if computation and 'expression' in computation and 'value' in computation:
                 text += '\nComputation:\n'
@@ -86,20 +82,17 @@ class BingSearchTool(BuiltinTool):
             if entities:
                 text += '\nEntities:\n'
                 for entity in entities:
-                    url = f'- {entity["url"]}' if "url" in entity else ""
-                    text += f'{entity.get("name", "")}{url}\n'
+                    text += f'{entity["name"]} - {entity["url"]}\n'
 
             if news:
                 text += '\nNews:\n'
                 for news_item in news:
-                    url = f'- {news_item["url"]}' if "url" in news_item else ""
-                    text += f'{news_item.get("name", "")}{url}\n'
+                    text += f'{news_item["name"]} - {news_item["url"]}\n'
 
             if related_searches:
                 text += '\n\nRelated Searches:\n'
                 for related in related_searches:
-                    url = f'- {related["webSearchUrl"]}' if "webSearchUrl" in related else ""
-                    text += f'{related.get("displayText", "")}{url}\n'
+                    text += f'{related["displayText"]} - {related["webSearchUrl"]}\n'
 
             return self.create_text_message(text=self.summary(user_id=user_id, content=text))
         

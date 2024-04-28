@@ -96,17 +96,8 @@ const NormalForm = () => {
           remember_me: true,
         },
       })
-
-      if (res.result === 'success') {
-        localStorage.setItem('console_token', res.data)
-        router.replace('/apps')
-      }
-      else {
-        Toast.notify({
-          type: 'error',
-          message: res.data,
-        })
-      }
+      localStorage.setItem('console_token', res.data)
+      router.replace('/apps')
     }
     finally {
       setIsLoading(false)

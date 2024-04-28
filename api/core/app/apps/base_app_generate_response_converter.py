@@ -26,10 +26,7 @@ class AppGenerateResponseConverter(ABC):
             else:
                 def _generate():
                     for chunk in cls.convert_stream_full_response(response):
-                        if chunk == 'ping':
-                            yield f'event: {chunk}\n\n'
-                        else:
-                            yield f'data: {chunk}\n\n'
+                        yield f'data: {chunk}\n\n'
 
                 return _generate()
         else:
@@ -38,10 +35,7 @@ class AppGenerateResponseConverter(ABC):
             else:
                 def _generate():
                     for chunk in cls.convert_stream_simple_response(response):
-                        if chunk == 'ping':
-                            yield f'event: {chunk}\n\n'
-                        else:
-                            yield f'data: {chunk}\n\n'
+                        yield f'data: {chunk}\n\n'
 
                 return _generate()
 

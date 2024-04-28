@@ -12,7 +12,7 @@ type IDevelopMainProps = {
 }
 
 const DevelopMain = ({ appId }: IDevelopMainProps) => {
-  const appDetail = useAppStore(state => state.appDetail)
+  const { appDetail } = useAppStore()
   const { t } = useTranslation()
 
   if (!appDetail) {

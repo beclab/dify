@@ -33,17 +33,11 @@ class ReplicateLargeLanguageModel(_CommonReplicate, LargeLanguageModel):
                 tools: Optional[list[PromptMessageTool]] = None, stop: Optional[list[str]] = None, stream: bool = True,
                 user: Optional[str] = None) -> Union[LLMResult, Generator]:
 
-        model_version = ''
-        if 'model_version' in credentials:
-            model_version = credentials['model_version']
+        version = credentials['model_version']
 
         client = ReplicateClient(api_token=credentials['replicate_api_token'], timeout=30)
         model_info = client.models.get(model)
-
-        if model_version:
-            model_info_version = model_info.versions.get(model_version)
-        else:
-            model_info_version = model_info.latest_version
+        model_info_version = model_info.versions.get(version)
 
         inputs = {**model_parameters}
 
@@ -71,35 +65,29 @@ class ReplicateLargeLanguageModel(_CommonReplicate, LargeLanguageModel):
         if 'replicate_api_token' not in credentials:
             raise CredentialsValidateFailedError('Replicate Access Token must be provided.')
 
-        model_version = ''
-        if 'model_version' in credentials:
-            model_version = credentials['model_version']
+        if 'model_version' not in credentials:
+            raise CredentialsValidateFailedError('Replicate Model Version must be provided.')
 
         if model.count("/") != 1:
             raise CredentialsValidateFailedError('Replicate Model Name must be provided, '
                                                  'format: {user_name}/{model_name}')
 
+        version = credentials['model_version']
+
         try:
             client = ReplicateClient(api_token=credentials['replicate_api_token'], timeout=30)
             model_info = client.models.get(model)
+            model_info_version = model_info.versions.get(version)
 
-            if model_version:
-                model_info_version = model_info.versions.get(model_version)
-            else:
-                model_info_version = model_info.latest_version
-
-            self._check_text_generation_model(model_info_version, model, model_version, model_info.description)
+            self._check_text_generation_model(model_info_version, model, version)
         except ReplicateError as e:
             raise CredentialsValidateFailedError(
-                f"Model {model}:{model_version} not exists, cause: {e.__class__.__name__}:{str(e)}")
+                f"Model {model}:{version} not exists, cause: {e.__class__.__name__}:{str(e)}")
         except Exception as e:
             raise CredentialsValidateFailedError(str(e))
 
     @staticmethod
-    def _check_text_generation_model(model_info_version, model_name, version, description):
-        if 'language model' in description.lower():
-            return
-
+    def _check_text_generation_model(model_info_version, model_name, version):
         if 'temperature' not in model_info_version.openapi_schema['components']['schemas']['Input']['properties'] \
                 or 'top_p' not in model_info_version.openapi_schema['components']['schemas']['Input']['properties'] \
                 or 'top_k' not in model_info_version.openapi_schema['components']['schemas']['Input']['properties']:
@@ -125,17 +113,11 @@ class ReplicateLargeLanguageModel(_CommonReplicate, LargeLanguageModel):
 
     @classmethod
     def _get_customizable_model_parameter_rules(cls, model: str, credentials: dict) -> list[ParameterRule]:
-        model_version = ''
-        if 'model_version' in credentials:
-            model_version = credentials['model_version']
+        version = credentials['model_version']
 
         client = ReplicateClient(api_token=credentials['replicate_api_token'], timeout=30)
         model_info = client.models.get(model)
-
-        if model_version:
-            model_info_version = model_info.versions.get(model_version)
-        else:
-            model_info_version = model_info.latest_version
+        model_info_version = model_info.versions.get(version)
 
         parameter_rules = []
 

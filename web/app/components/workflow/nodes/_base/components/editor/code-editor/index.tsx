@@ -1,7 +1,6 @@
 'use client'
 import type { FC } from 'react'
 import Editor, { loader } from '@monaco-editor/react'
-
 import React, { useRef } from 'react'
 import Base from '../base'
 import { CodeLanguage } from '@/app/components/workflow/nodes/code/types'
@@ -10,9 +9,8 @@ import './style.css'
 // load file from local instead of cdn https://github.com/suren-atoyan/monaco-react/issues/482
 loader.config({ paths: { vs: '/vs' } })
 
-export type Props = {
+type Props = {
   value?: string | object
-  placeholder?: string
   onChange?: (value: string) => void
   title: JSX.Element
   language: CodeLanguage
@@ -20,8 +18,6 @@ export type Props = {
   readOnly?: boolean
   isJSONStringifyBeauty?: boolean
   height?: number
-  isInNode?: boolean
-  onMount?: (editor: any, monaco: any) => void
 }
 
 const languageMap = {
@@ -32,7 +28,6 @@ const languageMap = {
 
 const CodeEditor: FC<Props> = ({
   value = '',
-  placeholder = '',
   onChange = () => { },
   title,
   headerRight,
@@ -40,8 +35,6 @@ const CodeEditor: FC<Props> = ({
   readOnly,
   isJSONStringifyBeauty,
   height,
-  isInNode,
-  onMount,
 }) => {
   const [isFocus, setIsFocus] = React.useState(false)
 
@@ -52,7 +45,6 @@ const CodeEditor: FC<Props> = ({
   const editorRef = useRef(null)
   const handleEditorDidMount = (editor: any, monaco: any) => {
     editorRef.current = editor
-
     editor.onDidFocusEditorText(() => {
       setIsFocus(true)
     })
@@ -77,8 +69,6 @@ const CodeEditor: FC<Props> = ({
         'editor.background': '#ffffff',
       },
     })
-
-    onMount?.(editor, monaco)
   }
 
   const outPutValue = (() => {
@@ -95,13 +85,11 @@ const CodeEditor: FC<Props> = ({
   return (
     <div>
       <Base
-        className='relative'
         title={title}
         value={outPutValue}
         headerRight={headerRight}
         isFocus={isFocus && !readOnly}
         minHeight={height || 200}
-        isInNode={isInNode}
       >
         <>
           {/* https://www.npmjs.com/package/@monaco-editor/react */}
@@ -126,7 +114,6 @@ const CodeEditor: FC<Props> = ({
             }}
             onMount={handleEditorDidMount}
           />
-          {!outPutValue && <div className='pointer-events-none absolute left-[36px] top-0 leading-[18px] text-[13px] font-normal text-gray-300'>{placeholder}</div>}
         </>
       </Base>
     </div>

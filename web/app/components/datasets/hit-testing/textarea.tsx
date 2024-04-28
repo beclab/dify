@@ -49,14 +49,7 @@ const TextAreaWithButton = ({
   const onSubmit = async () => {
     setLoading(true)
     const [e, res] = await asyncRunSafe<HitTestingResponse>(
-      hitTesting({
-        datasetId,
-        queryText: text,
-        retrieval_model: {
-          ...retrievalConfig,
-          search_method: isEconomy ? RETRIEVE_METHOD.keywordSearch : retrievalConfig.search_method,
-        },
-      }) as Promise<HitTestingResponse>,
+      hitTesting({ datasetId, queryText: text, retrieval_model: retrievalConfig }) as Promise<HitTestingResponse>,
     )
     if (!e) {
       setHitResult(res)
@@ -109,7 +102,7 @@ const TextAreaWithButton = ({
                     <Tag color="red" className="!text-red-600">
                       {text?.length}
                       <span className="text-red-300 mx-0.5">/</span>
-                      200
+                  200
                     </Tag>
                   </div>
                 </Tooltip>
@@ -121,20 +114,25 @@ const TextAreaWithButton = ({
                 >
                   {text?.length}
                   <span className="text-gray-300 mx-0.5">/</span>
-                  200
+              200
                 </Tag>
               )}
-
-            <div>
-              <Button
-                onClick={onSubmit}
-                type="primary"
-                loading={loading}
-                disabled={(!text?.length || text?.length > 200)}
-              >
-                {t('datasetHitTesting.input.testing')}
-              </Button>
-            </div>
+            <Tooltip
+              selector="hit-testing-submit"
+              disabled={indexingTechnique === 'high_quality'}
+              content={t('datasetHitTesting.input.indexWarning') as string}
+            >
+              <div>
+                <Button
+                  onClick={onSubmit}
+                  type="primary"
+                  loading={loading}
+                  disabled={indexingTechnique !== 'high_quality' ? true : (!text?.length || text?.length > 200)}
+                >
+                  {t('datasetHitTesting.input.testing')}
+                </Button>
+              </div>
+            </Tooltip>
           </div>
         </div>
 

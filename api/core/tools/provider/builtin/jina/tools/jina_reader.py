@@ -20,7 +20,7 @@ class JinaReaderTool(BuiltinTool):
         url = tool_parameters['url']
 
         headers = {
-            'Accept': 'application/json'
+            'Accept': 'text/event-stream'
         }
 
         response = ssrf_proxy.get(

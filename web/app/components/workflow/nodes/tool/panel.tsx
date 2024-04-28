@@ -123,7 +123,7 @@ const Panel: FC<NodePanelProps<ToolNodeType>> = ({
           <>
             <VarItem
               name='text'
-              type='String'
+              type='Array[Object]'
               description={t(`${i18nPrefix}.outputVars.text`)}
             />
             <VarItem

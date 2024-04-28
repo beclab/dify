@@ -35,7 +35,7 @@ const NavSelector = ({ curNav, navs, createText, isApp, onCreate, onLoadmore }: 
   const { t } = useTranslation()
   const router = useRouter()
   const { isCurrentWorkspaceManager } = useAppContext()
-  const setAppDetail = useAppStore(state => state.setAppDetail)
+  const { setAppDetail } = useAppStore()
 
   const handleScroll = useCallback(debounce((e) => {
     if (typeof onLoadmore === 'function') {

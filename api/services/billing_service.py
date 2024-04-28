@@ -3,7 +3,7 @@ import os
 import requests
 
 from extensions.ext_database import db
-from models.account import TenantAccountJoin, TenantAccountRole
+from models.account import TenantAccountJoin
 
 
 class BillingService:
@@ -74,5 +74,5 @@ class BillingService:
             TenantAccountJoin.account_id == current_user.id
         ).first()
 
-        if not TenantAccountRole.is_privileged_role(join.role):
+        if join.role not in ['owner', 'admin']:
             raise ValueError('Only team owner or team admin can perform this action')

@@ -3,7 +3,6 @@ import type { FC } from 'react'
 import React, { useCallback, useRef, useState } from 'react'
 import copy from 'copy-to-clipboard'
 import cn from 'classnames'
-import Wrap from './wrap'
 import PromptEditorHeightResizeWrap from '@/app/components/app/configuration/config-prompt/prompt-editor-height-resize-wrap'
 import { Clipboard, ClipboardCheck } from '@/app/components/base/icons/src/vender/line/files'
 import ToggleExpandBtn from '@/app/components/workflow/nodes/_base/components/toggle-expand-btn'
@@ -17,7 +16,6 @@ type Props = {
   minHeight?: number
   value: string
   isFocus: boolean
-  isInNode?: boolean
 }
 
 const Base: FC<Props> = ({
@@ -28,16 +26,14 @@ const Base: FC<Props> = ({
   minHeight = 120,
   value,
   isFocus,
-  isInNode,
 }) => {
   const ref = useRef<HTMLDivElement>(null)
   const {
     wrapClassName,
-    wrapStyle,
     isExpand,
     setIsExpand,
     editorExpandHeight,
-  } = useToggleExpend({ ref, hasFooter: false, isInNode })
+  } = useToggleExpend({ ref, hasFooter: false })
 
   const editorContentMinHeight = minHeight - 28
   const [editorContentHeight, setEditorContentHeight] = useState(editorContentMinHeight)
@@ -49,14 +45,11 @@ const Base: FC<Props> = ({
   }, [value])
 
   return (
-    <Wrap className={cn(wrapClassName)} style={wrapStyle} isInNode={isInNode} isExpand={isExpand}>
+    <div className={cn(wrapClassName)}>
       <div ref={ref} className={cn(className, isExpand && 'h-full', 'rounded-lg border', isFocus ? 'bg-white border-gray-200' : 'bg-gray-100 border-gray-100 overflow-hidden')}>
         <div className='flex justify-between items-center h-7 pt-1 pl-3 pr-2'>
           <div className='text-xs font-semibold text-gray-700'>{title}</div>
-          <div className='flex items-center' onClick={(e) => {
-            e.nativeEvent.stopImmediatePropagation()
-            e.stopPropagation()
-          }}>
+          <div className='flex items-center' onClick={e => e.stopPropagation()}>
             {headerRight}
             {!isCopied
               ? (
@@ -82,7 +75,7 @@ const Base: FC<Props> = ({
           </div>
         </PromptEditorHeightResizeWrap>
       </div>
-    </Wrap>
+    </div>
   )
 }
 export default React.memo(Base)

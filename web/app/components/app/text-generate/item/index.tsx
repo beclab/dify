@@ -8,8 +8,9 @@ import { useParams } from 'next/navigation'
 import { HandThumbDownIcon, HandThumbUpIcon } from '@heroicons/react/24/outline'
 import { useBoolean } from 'ahooks'
 import { HashtagIcon } from '@heroicons/react/24/solid'
-import ResultTab from './result-tab'
+// import PromptLog from '@/app/components/app/chat/log'
 import { Markdown } from '@/app/components/base/markdown'
+import CodeEditor from '@/app/components/workflow/nodes/_base/components/editor/code-editor'
 import Loading from '@/app/components/base/loading'
 import Toast from '@/app/components/base/toast'
 import AudioBtn from '@/app/components/base/audio-btn'
@@ -25,6 +26,7 @@ import EditReplyModal from '@/app/components/app/annotation/edit-annotation-moda
 import { useStore as useAppStore } from '@/app/components/app/store'
 import WorkflowProcessItem from '@/app/components/base/chat/chat/answer/workflow-process'
 import type { WorkflowProcess } from '@/app/components/base/chat/types'
+import { CodeLanguage } from '@/app/components/workflow/nodes/code/types'
 
 const MAX_DEPTH = 3
 
@@ -119,8 +121,7 @@ const GenerationItem: FC<IGenerationItemProps> = ({
   const [childFeedback, setChildFeedback] = useState<Feedbacktype>({
     rating: null,
   })
-  const setCurrentLogItem = useAppStore(s => s.setCurrentLogItem)
-  const setShowPromptLogModal = useAppStore(s => s.setShowPromptLogModal)
+  const { setCurrentLogItem, setShowPromptLogModal } = useAppStore()
 
   const handleFeedback = async (childFeedback: Feedbacktype) => {
     await updateFeedback({ url: `/messages/${childMessageId}/feedbacks`, body: { rating: childFeedback.rating } }, isInstalledApp, installedAppId)
@@ -291,16 +292,22 @@ const GenerationItem: FC<IGenerationItemProps> = ({
             <div className={`flex ${contentClassName}`}>
               <div className='grow w-0'>
                 {workflowProcessData && (
-                  <WorkflowProcessItem grayBg hideInfo data={workflowProcessData} expand={workflowProcessData.expand} />
-                )}
-                {workflowProcessData && !isError && (
-                  <ResultTab data={workflowProcessData} content={content} />
+                  <WorkflowProcessItem grayBg data={workflowProcessData} expand={workflowProcessData.expand} />
                 )}
                 {isError && (
                   <div className='text-gray-400 text-sm'>{t('share.generation.batchFailed.outputPlaceholder')}</div>
                 )}
-                {!workflowProcessData && !isError && (typeof content === 'string') && (
+                {!isError && (typeof content === 'string') && (
                   <Markdown content={content} />
+                )}
+                {!isError && (typeof content !== 'string') && (
+                  <CodeEditor
+                    readOnly
+                    title={<div/>}
+                    language={CodeLanguage.json}
+                    value={content}
+                    isJSONStringifyBeauty
+                  />
                 )}
               </div>
             </div>
@@ -419,11 +426,7 @@ const GenerationItem: FC<IGenerationItemProps> = ({
                   </>
                 )}
               </div>
-              <div>
-                {!workflowProcessData && (
-                  <div className='text-xs text-gray-500'>{content?.length} {t('common.unit.char')}</div>
-                )}
-              </div>
+              <div className='text-xs text-gray-500'>{content?.length} {t('common.unit.char')}</div>
             </div>
 
           </div>

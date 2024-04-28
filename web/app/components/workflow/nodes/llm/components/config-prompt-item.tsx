@@ -13,9 +13,6 @@ import { PromptRole } from '@/models/debug'
 const i18nPrefix = 'workflow.nodes.llm'
 
 type Props = {
-  className?: string
-  headerClassName?: string
-  canNotChooseSystemRole?: boolean
   readOnly: boolean
   id: string
   canRemove: boolean
@@ -50,12 +47,7 @@ const roleOptions = [
   },
 ]
 
-const roleOptionsWithoutSystemRole = roleOptions.filter(item => item.value !== PromptRole.system)
-
 const ConfigPromptItem: FC<Props> = ({
-  className,
-  headerClassName,
-  canNotChooseSystemRole,
   readOnly,
   id,
   canRemove,
@@ -76,28 +68,19 @@ const ConfigPromptItem: FC<Props> = ({
     setInstanceId(`${id}-${uniqueId()}`)
   }, [id])
   return (
+
     <Editor
-      className={className}
-      headerClassName={headerClassName}
       instanceId={instanceId}
       key={instanceId}
       title={
         <div className='relative left-1 flex items-center'>
-          {payload.role === PromptRole.system
-            ? (<div className='relative left-[-4px] text-xs font-semibold text-gray-700 uppercase'>
-              SYSTEM
-            </div>)
-            : (
-              <TypeSelector
-                value={payload.role as string}
-                allOptions={roleOptions}
-                options={canNotChooseSystemRole ? roleOptionsWithoutSystemRole : roleOptions}
-                onChange={handleChatModeMessageRoleChange}
-                triggerClassName='text-xs font-semibold text-gray-700 uppercase'
-                itemClassName='text-[13px] font-medium text-gray-700'
-              />
-            )}
-
+          <TypeSelector
+            value={payload.role as string}
+            options={roleOptions}
+            onChange={handleChatModeMessageRoleChange}
+            triggerClassName='text-xs font-semibold text-gray-700 uppercase'
+            itemClassName='text-[13px] font-medium text-gray-700'
+          />
           <TooltipPlus
             popupContent={
               <div className='max-w-[180px]'>{t(`${i18nPrefix}.roleDescription.${payload.role}`)}</div>

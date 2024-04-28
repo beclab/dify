@@ -70,7 +70,6 @@ const Panel: FC<NodePanelProps<StartNodeType>> = ({
                     }
                   />)
               }
-
               <VarItem
                 readonly
                 payload={{
@@ -79,32 +78,6 @@ const Panel: FC<NodePanelProps<StartNodeType>> = ({
                 rightContent={
                   <div className='text-xs font-normal text-gray-500'>
                     Array[File]
-                  </div>
-                }
-              />
-              {
-                isChatMode && (
-                  <VarItem
-                    readonly
-                    payload={{
-                      variable: 'sys.conversation_id',
-                    } as any}
-                    rightContent={
-                      <div className='text-xs font-normal text-gray-500'>
-                        String
-                      </div>
-                    }
-                  />
-                )
-              }
-              <VarItem
-                readonly
-                payload={{
-                  variable: 'sys.user_id',
-                } as any}
-                rightContent={
-                  <div className='text-xs font-normal text-gray-500'>
-                    String
                   </div>
                 }
               />

@@ -86,9 +86,7 @@ class Vector:
                     endpoint=config.get('QDRANT_URL'),
                     api_key=config.get('QDRANT_API_KEY'),
                     root_path=current_app.root_path,
-                    timeout=config.get('QDRANT_CLIENT_TIMEOUT'),
-                    grpc_port=config.get('QDRANT_GRPC_PORT'),
-                    prefer_grpc=config.get('QDRANT_GRPC_ENABLED')
+                    timeout=config.get('QDRANT_CLIENT_TIMEOUT')
                 )
             )
         elif vector_type == "milvus":
@@ -128,6 +126,7 @@ class Vector:
                     "vector_store": {"class_prefix": collection_name}
                 }
                 self._dataset.index_struct = json.dumps(index_struct_dict)
+            dim = len(self._embeddings.embed_query("hello relyt"))
             return RelytVector(
                 collection_name=collection_name,
                 config=RelytConfig(
@@ -137,7 +136,7 @@ class Vector:
                     password=config.get('RELYT_PASSWORD'),
                     database=config.get('RELYT_DATABASE'),
                 ),
-                group_id=self._dataset.id
+                dim=dim
             )
         else:
             raise ValueError(f"Vector store {config.get('VECTOR_STORE')} is not supported.")

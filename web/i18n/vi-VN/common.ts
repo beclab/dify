@@ -34,8 +34,6 @@ const translation = {
     log: 'Nhật ký',
     learnMore: 'Tìm hiểu thêm',
     params: 'Tham số',
-    duplicate: 'Nhân bản',
-    rename: 'Đổi tên',
   },
   placeholder: {
     input: 'Vui lòng nhập',
@@ -506,21 +504,6 @@ const translation = {
     pasteImageLinkInputPlaceholder: 'Dán liên kết ảnh ở đây',
     pasteImageLinkInvalid: 'Liên kết ảnh không hợp lệ',
     imageUpload: 'Tải ảnh lên',
-  },
-  tag: {
-    placeholder: 'Tất cả các thẻ',
-    addNew: 'Thêm thẻ mới',
-    noTag: 'Không có thẻ',
-    noTagYet: 'Chưa có thẻ',
-    addTag: 'thêm thẻ',
-    editTag: 'Chỉnh sửa thẻ',
-    manageTags: 'Quản lý thẻ',
-    selectorPlaceholder: 'Nhập để tìm kiếm hoặc tạo',
-    create: 'Tạo',
-    delete: 'Xóa thẻ',
-    deleteTip: 'Thẻ đang được sử dụng, xóa nó đi?',
-    created: 'Thẻ được tạo thành công',
-    failed: 'Tạo thẻ không thành công',
   },
 }
 

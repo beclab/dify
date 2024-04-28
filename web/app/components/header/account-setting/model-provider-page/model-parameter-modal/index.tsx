@@ -2,7 +2,7 @@ import type {
   FC,
   ReactNode,
 } from 'react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
 import { useTranslation } from 'react-i18next'
 import cn from 'classnames'
@@ -16,6 +16,7 @@ import ModelSelector from '../model-selector'
 import {
   useTextGenerationCurrentProviderAndModelAndModelList,
 } from '../hooks'
+import { isNullOrUndefined } from '../utils'
 import ParameterItem from './parameter-item'
 import type { ParameterValue } from './parameter-item'
 import Trigger from './trigger'
@@ -138,6 +139,26 @@ const ModelParameterModal: FC<ModelParameterModalProps> = ({
     }
   }
 
+  const handleInitialParams = () => {
+    const newCompletionParams = { ...completionParams }
+    if (parameterRules.length) {
+      parameterRules.forEach((parameterRule) => {
+        if (!newCompletionParams[parameterRule.name]) {
+          if (!isNullOrUndefined(parameterRule.default))
+            newCompletionParams[parameterRule.name] = parameterRule.default
+          else
+            delete newCompletionParams[parameterRule.name]
+        }
+      })
+
+      onCompletionParamsChange(newCompletionParams)
+    }
+  }
+
+  useEffect(() => {
+    handleInitialParams()
+  }, [parameterRules])
+
   const handleSelectPresetParameter = (toneId: number) => {
     const tone = TONE_LIST.find(tone => tone.id === toneId)
     if (tone) {
@@ -197,14 +218,13 @@ const ModelParameterModal: FC<ModelParameterModalProps> = ({
               !isInWorkflow && 'px-10 pt-6 pb-8',
               isInWorkflow && 'p-4')}>
               <div className='flex items-center justify-between h-8'>
-                <div className={cn('font-semibold text-gray-900 shrink-0', isInWorkflow && 'text-[13px]')}>
+                <div className={cn('font-semibold text-gray-900', isInWorkflow && 'text-[13px]')}>
                   {t('common.modelProvider.model').toLocaleUpperCase()}
                 </div>
                 <ModelSelector
                   defaultModel={(provider || modelId) ? { provider, model: modelId } : undefined}
                   modelList={activeTextGenerationModelList}
                   onSelect={handleChangeModel}
-                  triggerClassName='max-w-[295px]'
                 />
               </div>
               {

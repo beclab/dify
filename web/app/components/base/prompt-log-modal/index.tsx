@@ -34,13 +34,7 @@ const PromptLogModal: FC<PromptLogModalProps> = ({
   return (
     <div
       className='fixed top-16 left-2 bottom-2 flex flex-col bg-white border-[0.5px] border-gray-200 rounded-xl shadow-xl z-10'
-      style={{
-        width: 480,
-        position: 'fixed',
-        top: 56 + 8,
-        left: 8 + (width - 480),
-        bottom: 16,
-      }}
+      style={{ width }}
       ref={ref}
     >
       <div className='shrink-0 flex justify-between items-center pl-6 pr-5 h-14 border-b border-b-gray-100'>

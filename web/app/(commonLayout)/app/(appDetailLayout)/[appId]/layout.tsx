@@ -5,7 +5,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import cn from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { useShallow } from 'zustand/react/shallow'
 import s from './style.module.css'
 import { useStore } from '@/app/components/app/store'
 import AppSideBar from '@/app/components/app-sidebar'
@@ -33,11 +32,7 @@ const AppDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
   const media = useBreakpoints()
   const isMobile = media === MediaType.mobile
   const { isCurrentWorkspaceManager } = useAppContext()
-  const { appDetail, setAppDetail, setAppSiderbarExpand } = useStore(useShallow(state => ({
-    appDetail: state.appDetail,
-    setAppDetail: state.setAppDetail,
-    setAppSiderbarExpand: state.setAppSiderbarExpand,
-  })))
+  const { appDetail, setAppDetail, setAppSiderbarExpand } = useStore()
   const [navigation, setNavigation] = useState<Array<{
     name: string
     href: string

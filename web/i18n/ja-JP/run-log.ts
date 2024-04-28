@@ -18,12 +18,6 @@ const translation = {
     tokens: 'トークンの合計',
     steps: '実行ステップ',
   },
-  resultEmpty: {
-    title: 'この実行では JSON 形式のみが出力されます',
-    tipLeft: 'にアクセスしてください',
-    link: '詳細パネル',
-    tipRight: '表示します。',
-  },
 }
 
 export default translation

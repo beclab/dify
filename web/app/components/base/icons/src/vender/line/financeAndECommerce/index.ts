@@ -1,5 +1,3 @@
 export { default as CoinsStacked01 } from './CoinsStacked01'
 export { default as GoldCoin } from './GoldCoin'
 export { default as ReceiptList } from './ReceiptList'
-export { default as Tag01 } from './Tag01'
-export { default as Tag03 } from './Tag03'
