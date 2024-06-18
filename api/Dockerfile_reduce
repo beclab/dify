@@ -42,8 +42,27 @@ WORKDIR /app/api
 
 COPY --from=build /usr/local /usr/local
 COPY --from=build /usr/bin/ffmpeg /usr/bin/ffmpeg
-COPY --from=build /usr/lib/x86_64-linux-gnu/libavcodec.so.* /usr/lib/x86_64-linux-gnu/
-COPY --from=build /usr/lib/x86_64-linux-gnu/libavformat.so.* /usr/lib/x86_64-linux-gnu/
+#COPY --from=build /usr/lib/x86_64-linux-gnu/libavcodec.so.* /usr/lib/x86_64-linux-gnu/
+#COPY --from=build /usr/lib/x86_64-linux-gnu/libavformat.so.* /usr/lib/x86_64-linux-gnu/
+
+ARG TARGETARCH
+RUN if [ "$TARGETARCH" = "amd64" ]; then \
+        echo "Building for AMD64"; \
+    else \
+        echo "Building for ARM64"; \
+    fi
+
+RUN if [ "$TARGETARCH" = "amd64" ]; then \
+        LIBDIR="/usr/lib/x86_64-linux-gnu"; \
+    else \
+        LIBDIR="/usr/lib/aarch64-linux-gnu"; \
+    fi && \
+    echo "Using library directory: $LIBDIR"
+
+COPY --from=build $LIBDIR/libavcodec.so.* $LIBDIR/
+
+COPY --from=build $LIBDIR/libavformat.so.* $LIBDIR/
+
 #COPY . /app/api/
 COPY api /app/api/
 
