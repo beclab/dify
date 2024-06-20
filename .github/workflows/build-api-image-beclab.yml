@@ -49,4 +49,3 @@ jobs:
           push: true
           tags: beclab/dify-api:${{ steps.get-latest-tag.outputs.tag }}
           platforms: linux/amd64,linux/arm64
-
