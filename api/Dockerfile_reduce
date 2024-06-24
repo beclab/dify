@@ -16,6 +16,22 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
+RUN mkdir temp_lib
+ARG TARGETARCH
+RUN if [ "$TARGETARCH" = "amd64" ]; then \
+        echo "Building for AMD64" && \
+        cp /usr/lib/x86_64-linux-gnu/libavcodec.so.* temp_lib/ && \
+        cp /usr/lib/x86_64-linux-gnu/libavformat.so.* temp_lib/ && \
+        cp /usr/lib/x86_64-linux-gnu/libmpfr.so.* temp_lib/ && \
+        cp /usr/lib/x86_64-linux-gnu/libmpc.so.* temp_lib/; \
+    else \
+        echo "Building for ARM64" && \
+        cp /usr/lib/aarch64-linux-gnu/libavcodec.so.* temp_lib/ && \
+        cp /usr/lib/aarch64-linux-gnu/libavformat.so.* temp_lib/ && \
+        cp /usr/lib/aarch64-linux-gnu/libmpfr.so.* temp_lib/ && \
+        cp /usr/lib/aarch64-linux-gnu/libmpc.so.* temp_lib/; \
+    fi
+
 # production stage
 FROM base AS production
 
@@ -41,27 +57,22 @@ WORKDIR /app/api
 #    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /usr/local /usr/local
+# COPY --from=build /usr/lib /usr/lib
 COPY --from=build /usr/bin/ffmpeg /usr/bin/ffmpeg
 #COPY --from=build /usr/lib/x86_64-linux-gnu/libavcodec.so.* /usr/lib/x86_64-linux-gnu/
 #COPY --from=build /usr/lib/x86_64-linux-gnu/libavformat.so.* /usr/lib/x86_64-linux-gnu/
 
+RUN mkdir temp_lib
+COPY --from=build temp_lib/* temp_lib/
+
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
-        echo "Building for AMD64"; \
+        echo "Building for AMD64" && \
+        mv temp_lib/* /usr/lib/x86_64-linux-gnu/; \
     else \
-        echo "Building for ARM64"; \
+        echo "Building for ARM64" && \
+        mv temp_lib/* /usr/lib/aarch64-linux-gnu/; \
     fi
-
-RUN if [ "$TARGETARCH" = "amd64" ]; then \
-        LIBDIR="/usr/lib/x86_64-linux-gnu"; \
-    else \
-        LIBDIR="/usr/lib/aarch64-linux-gnu"; \
-    fi && \
-    echo "Using library directory: $LIBDIR"
-
-COPY --from=build $LIBDIR/libavcodec.so.* $LIBDIR/
-
-COPY --from=build $LIBDIR/libavformat.so.* $LIBDIR/
 
 #COPY . /app/api/
 COPY api /app/api/
