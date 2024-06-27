@@ -1,10 +1,10 @@
 name: NGINX-LUA
 
 on:
-#  workflow_dispatch:
-#    inputs:
-#      tags:
-#        description: 'Nginx-Lua Tags'
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Nginx-Lua Tags'
 
   push:
 #    branches:
@@ -48,7 +48,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: api/Dockerfile_nginx-lua
+          file: api/Dockerfile_nginx-lua-arm64
           push: true
 #          tags: beclab/nginx-lua:${{ github.event.inputs.tags }}
           tags: beclab/nginx-lua:${{ steps.get-latest-tag.outputs.tag }}
