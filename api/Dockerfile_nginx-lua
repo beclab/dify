@@ -1,0 +1,8 @@
+FROM firesh/nginx-lua:latest
+
+# 安装 LuaCJSON
+RUN apk update && \
+    apk add --no-cache lua5.1-cjson
+
+# 启动 Nginx 服务
+CMD ["nginx", "-g", "daemon off;"]

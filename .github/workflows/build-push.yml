@@ -1,10 +1,10 @@
 name: Build and Push API & Web
 
 on:
-  push:
-    branches:
-      - "main"
-      - "deploy/dev"
+#  push:
+#    branches:
+#      - "main"
+#      - "deploy/dev"
   release:
     types: [published]
 
