@@ -319,8 +319,8 @@ const baseFetch = <T>(
     getAbortController(abortController)
     options.signal = abortController.signal
   }
-  const accessToken = getAccessToken(isPublicAPI)
-  options.headers.set('Authorization', `Bearer ${accessToken}`)
+  //const accessToken = getAccessToken(isPublicAPI)
+  //options.headers.set('Authorization', `Bearer ${accessToken}`)
 
   if (deleteContentType) {
     options.headers.delete('Content-Type')
@@ -413,12 +413,12 @@ const baseFetch = <T>(
 
 export const upload = (options: any, isPublicAPI?: boolean, url?: string, searchParams?: string): Promise<any> => {
   const urlPrefix = isPublicAPI ? PUBLIC_API_PREFIX : API_PREFIX
-  const token = getAccessToken(isPublicAPI)
+  //const token = getAccessToken(isPublicAPI)
   const defaultOptions = {
     method: 'POST',
     url: (url ? `${urlPrefix}${url}` : `${urlPrefix}/files/upload`) + (searchParams || ''),
     headers: {
-      Authorization: `Bearer ${token}`,
+      //Authorization: `Bearer ${token}`,
     },
     data: {},
   }
@@ -500,8 +500,8 @@ export const ssePost = (
   if (body)
     options.body = JSON.stringify(body)
 
-  const accessToken = getAccessToken(isPublicAPI)
-  options.headers.set('Authorization', `Bearer ${accessToken}`)
+  //const accessToken = getAccessToken(isPublicAPI)
+  //options.headers.set('Authorization', `Bearer ${accessToken}`)
 
   globalThis.fetch(urlWithPrefix, options as RequestInit)
     .then((res) => {

@@ -16,8 +16,8 @@ const SwrInitor = ({
   const searchParams = useSearchParams()
   const consoleToken = decodeURIComponent(searchParams.get('access_token') || '')
   const refreshToken = decodeURIComponent(searchParams.get('refresh_token') || '')
-  const consoleTokenFromLocalStorage = localStorage?.getItem('console_token')
-  const refreshTokenFromLocalStorage = localStorage?.getItem('refresh_token')
+  const consoleTokenFromLocalStorage = localStorage?.getItem('console_token') || 'console'
+  const refreshTokenFromLocalStorage = localStorage?.getItem('refresh_token') || 'refresh'
   const pathname = usePathname()
   const [init, setInit] = useState(false)
 
